@@ -16,7 +16,7 @@ import DefaultAuth from 'layouts/auth/Default';
 
 // Assets
 import { FcGoogle } from 'react-icons/fc';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Navigate } from 'react-router-dom';
 import { LoginIllustration } from 'assets';
 import Input from 'components/Base/Input';
 import PasswordField from 'components/Base/PasswordField';
@@ -30,6 +30,7 @@ import {
 } from 'firebase/auth';
 import { auth } from 'config/firebase-config';
 import {  useReducer } from 'react';
+import useAuth from 'hook/useAuth';
 
 
 
@@ -51,6 +52,8 @@ function Login() {
 
   const reducer = (prevState, action) => ({ ...prevState, ...action });
   const [state, dispatch] = useReducer(reducer, { loading: false });
+  const [user] = useAuth();
+
 
   const initialValues = {
     email: '',
@@ -80,6 +83,10 @@ function Login() {
     validateOnBlur: true,
     onSubmit: submitForm,
   });
+
+  if (user) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <DefaultAuth
@@ -155,11 +162,12 @@ function Login() {
                 label="Email"
                 name="email"
                 required
+                type="email"
                 fontWeight="500"
                 value={formik.values.email}
                 error={formik.errors.email}
                 onChange={formik.handleChange}
-                placeholder="mail@simmmple.com"
+                placeholder="mail@task.com"
               />
               <PasswordField
                 label="Password"
